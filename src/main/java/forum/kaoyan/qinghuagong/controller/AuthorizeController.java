@@ -47,7 +47,7 @@ public class AuthorizeController {
         accessTokenDTO.setClient_secret(clientSecret);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);//光标选中new AccessTokenDTO()，快捷键ctrl+alt+v，把变量快速提取到外面
         GithubUser githubUser = githubProvider.getUser(accessToken);
-        if(githubUser!=null){
+        if(githubUser!=null&&githubUser.getId()!=null){
             User user = new User();
             String token = UUID.randomUUID().toString();
             user.setToken(token);//token用UUID设置
