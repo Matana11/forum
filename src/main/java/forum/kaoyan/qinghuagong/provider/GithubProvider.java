@@ -53,7 +53,9 @@ public class GithubProvider {
             return githubUser;
         } catch (IOException e) {
             e.printStackTrace();
+
         }
+
         return null;
     }
 }
