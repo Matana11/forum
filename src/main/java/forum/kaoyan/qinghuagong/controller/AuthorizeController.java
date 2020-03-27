@@ -5,6 +5,7 @@ import forum.kaoyan.qinghuagong.dto.GithubUser;
 import forum.kaoyan.qinghuagong.mapper.UserMapper;
 import forum.kaoyan.qinghuagong.model.User;
 import forum.kaoyan.qinghuagong.provider.GithubProvider;
+import forum.kaoyan.qinghuagong.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import lombok.Data;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
@@ -25,6 +27,9 @@ public class AuthorizeController {
 
     @Autowired(required = false)
     private UserMapper userMapper;
+
+    @Autowired
+    private UserService userService;
 
     @Value("${github.client.id}")
     private String clientId;
@@ -57,7 +62,7 @@ public class AuthorizeController {
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
             user.setAvatarUrl(githubUser.getAvatar_url());
-            userMapper.insert(user);
+            userService.createOrUpdate(user);
             response.addCookie(new Cookie("token",token));
            //
             return "redirect:/";
@@ -65,7 +70,16 @@ public class AuthorizeController {
             //登录失败，重新登录
             return "redirect:/";
         }
-
-
     }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response,
+                         HttpServletRequest request){
+        request.getSession().removeAttribute("user");//删除session
+        Cookie cookie=new Cookie("token",null);//删除cookie
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/"; //直接redirect回主页
+    }
+
 }

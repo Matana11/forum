@@ -1,13 +1,16 @@
 package forum.kaoyan.qinghuagong.controller;
 
+import forum.kaoyan.qinghuagong.dto.QuestionDTO;
 import forum.kaoyan.qinghuagong.mapper.QuestionMapper;
 import forum.kaoyan.qinghuagong.mapper.UserMapper;
 import forum.kaoyan.qinghuagong.model.Question;
 import forum.kaoyan.qinghuagong.model.User;
+import forum.kaoyan.qinghuagong.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -17,11 +20,20 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class PublishController {
 
-    @Autowired(required = false)
-    private QuestionMapper questionMapper;
 
-    @Autowired(required = false)
-    private UserMapper userMapper;
+    @Autowired
+    private QuestionService questionService;
+
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable(name = "id") Integer id,
+                       Model model){
+        QuestionDTO question=questionService.getById(id);
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescription());
+        model.addAttribute("tag",question.getTag());
+        model.addAttribute("id",question.getId());
+        return "publish";
+    }
 
     @GetMapping("/publish")
     public String publish(){
@@ -33,6 +45,7 @@ public class PublishController {
             @RequestParam(value = "title",required = false) String title,
             @RequestParam(value = "description",required = false) String description,
             @RequestParam(value = "tag",required = false) String tag,
+            @RequestParam(value = "id",required = false) Integer id,
             HttpServletRequest request,
             Model model){
 
@@ -64,10 +77,11 @@ public class PublishController {
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(user.getId());
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
 
-        questionMapper.create(question);
+        question.setId(id);
+
+        questionService.createOrUpdate(question);
+
         return "redirect:/";
     }
 
