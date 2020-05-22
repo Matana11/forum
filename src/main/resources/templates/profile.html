@@ -38,23 +38,23 @@
                         </a>
                     </li>
                     <li th:if="${pagination.showPrevious}">
-                        <a th:href="@{/(page=${pagination.page -1})}" aria-label="Previous">
+                        <a th:href="@{/profile/(page=${pagination.page -1})}" aria-label="Previous">
                             <span aria-hidden="true">&lt;</span>
                         </a>
                     </li>
 
                     <li th:if="${pagination.getPage()<=pagination.getTotalPage()}" th:each="page : ${pagination.pages}" th:class="${pagination.page==page}?'active':''">
-                        <a th:href="@{/(page=${page})}" th:text="${page}" >
+                        <a th:href="@{/profile/(page=${page})}" th:text="${page}" >
 
                         </a></li>
 
                     <li th:if="${pagination.showNext}">
-                        <a th:href="@{/(page=${pagination.page +1})}" aria-label="Next">
+                        <a th:href="@{/profile/(page=${pagination.page +1})}" aria-label="Next">
                             <span aria-hidden="true">&gt;</span>
                         </a>
                     </li>
                     <li th:if="${pagination.showEndPage}">
-                        <a th:href="@{/(page=${pagination.totalPage})}" aria-label="End">
+                        <a th:href="@{/profile/(page=${pagination.totalPage})}" aria-label="End">
                             <span aria-hidden="true">&gt;&gt;</span>
                         </a>
                     </li>

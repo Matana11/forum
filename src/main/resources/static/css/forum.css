@@ -27,3 +27,12 @@ body{
     color: #999;
     font-size: 13px;
 }
+
+.jumbotron{
+    margin:50px;
+}
+
+.adminlogin.container-fluid main1{
+    margin: auto;
+    background-color: #5bc0de;
+}

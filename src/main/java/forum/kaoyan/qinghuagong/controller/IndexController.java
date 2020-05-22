@@ -6,6 +6,7 @@ import forum.kaoyan.qinghuagong.mapper.QuestionMapper;
 import forum.kaoyan.qinghuagong.mapper.UserMapper;
 import forum.kaoyan.qinghuagong.model.Question;
 import forum.kaoyan.qinghuagong.model.User;
+import forum.kaoyan.qinghuagong.model.UserExample;
 import forum.kaoyan.qinghuagong.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,9 +42,13 @@ public class IndexController {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {
                     String token = cookie.getValue();
-                    User user = userMapper.findByToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
+
+                    UserExample userExample=new UserExample();
+                    userExample.createCriteria()
+                            .andTokenEqualTo(token);
+                    List<User> users = userMapper.selectByExample(userExample);
+                    if (users.size() != 0) {
+                        request.getSession().setAttribute("user", users.get(0));
                     }
                     break;
                 }
